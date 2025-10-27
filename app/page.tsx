@@ -2,21 +2,51 @@
 
 import { FormEvent, useState, MouseEvent } from "react";
 import axios from "axios";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 export default function Home() {
   const [url, setUrl] = useState<string>("");
   const [result, setResult] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
+
+  function normalizeUrl(input: string): string {
+    if (!input) return "";
+    let u = input.trim();
+
+    if (!/^[a-zA-Z]+:\/\//.test(u)) {
+      u = "https://" + u;
+    }
+
+    try {
+      const parsed = new URL(u);
+      return parsed.origin + parsed.pathname + parsed.search;
+    } catch {
+      return input.trim();
+    }
+  }
+
   const handleScan = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!url) return;
+
+    const cleanedUrl = normalizeUrl(url);
     setLoading(true);
     setResult("");
+
     try {
-      const res = await axios.post<{ message: string }>("/api/scan", { url });
+      const res = await axios.post<{ message: string }>(BACKEND_URL, {
+        url: cleanedUrl,
+      });
       setResult(res.data.message);
     } catch (err) {
+      console.error("Scan error:", err);
       setResult("Error: Unable to scan this link.");
     } finally {
       setLoading(false);
@@ -33,6 +63,7 @@ export default function Home() {
 
   return (
     <div
+      className={poppins.className}
       style={{
         minHeight: "100vh",
         background:
@@ -43,10 +74,9 @@ export default function Home() {
         justifyContent: "center",
         color: "white",
         padding: "20px",
-        fontFamily: "Arial, Helvetica, sans-serif",
+        fontFamily: "Poppins, sans-serif",
       }}
     >
-      {/* Hero Section */}
       <div style={{ textAlign: "center", maxWidth: "600px" }}>
         <h1
           style={{
@@ -150,7 +180,7 @@ export default function Home() {
         }}
       >
         <p>
-          © {new Date().getFullYear()} LinksProbe — built with ❤️ by{" "}
+          © {new Date().getFullYear()} LinksProbe - built with ❤️ by{" "}
           <a
             href="https://github.com/kennethnnabuife"
             style={{ color: "#00bfff", textDecoration: "none" }}
