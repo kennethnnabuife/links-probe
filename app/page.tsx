@@ -1,8 +1,9 @@
 "use client";
 
-import { FormEvent, useState, MouseEvent } from "react";
+import { FormEvent, useState, MouseEvent as ReactMouseEvent } from "react";
 import axios from "axios";
 import { Poppins } from "next/font/google";
+import { useEffect } from "react";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -13,17 +14,25 @@ export default function Home() {
   const [url, setUrl] = useState<string>("");
   const [result, setResult] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
+
+  //Mouse move effect
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   function normalizeUrl(input: string): string {
     if (!input) return "";
     let u = input.trim();
-
     if (!/^[a-zA-Z]+:\/\//.test(u)) {
       u = "https://" + u;
     }
-
     try {
       const parsed = new URL(u);
       return parsed.origin + parsed.pathname + parsed.search;
@@ -53,11 +62,11 @@ export default function Home() {
     }
   };
 
-  const handleMouseEnter = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleMouseEnter = (e: ReactMouseEvent<HTMLButtonElement>) => {
     (e.target as HTMLButtonElement).style.backgroundColor = "#0099cc";
   };
 
-  const handleMouseLeave = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleMouseLeave = (e: ReactMouseEvent<HTMLButtonElement>) => {
     (e.target as HTMLButtonElement).style.backgroundColor = "#00bfff";
   };
 
@@ -75,9 +84,31 @@ export default function Home() {
         color: "white",
         padding: "20px",
         fontFamily: "Poppins, sans-serif",
+        overflow: "hidden",
+        position: "relative",
       }}
     >
-      <div style={{ textAlign: "center", maxWidth: "600px" }}>
+      {/* Mouse glow circle */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "200px",
+          height: "200px",
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, rgba(0,191,255,0.3) 0%, transparent 70%)",
+          pointerEvents: "none",
+          transform: `translate(${mousePosition.x - 100}px, ${
+            mousePosition.y - 100
+          }px)`,
+          transition: "transform 0.05s linear",
+          zIndex: 1,
+        }}
+      />
+
+      <div style={{ textAlign: "center", maxWidth: "600px", zIndex: 2 }}>
         <h1
           style={{
             fontSize: "3rem",
@@ -95,7 +126,7 @@ export default function Home() {
             marginBottom: "40px",
           }}
         >
-          Instantly check if a link is safe, suspicious, or dangerous — powered
+          Instantly check if a link is safe, suspicious, or dangerous, powered
           by intelligent threat analysis.
         </p>
 
@@ -177,10 +208,11 @@ export default function Home() {
           textAlign: "center",
           color: "#8b8b8b",
           fontSize: "0.9rem",
+          zIndex: 2,
         }}
       >
         <p>
-          © {new Date().getFullYear()} LinksProbe - built with ❤️ by{" "}
+          © {new Date().getFullYear()} LinksProbe, built with ❤️ by{" "}
           <a
             href="https://github.com/kennethnnabuife"
             style={{ color: "#00bfff", textDecoration: "none" }}
