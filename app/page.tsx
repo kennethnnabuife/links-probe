@@ -4,6 +4,7 @@ import { FormEvent, useState, MouseEvent as ReactMouseEvent } from "react";
 import axios from "axios";
 import { Poppins } from "next/font/google";
 import { useEffect } from "react";
+import Link from "next/link";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -18,7 +19,7 @@ export default function Home() {
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
-  //Mouse move effect
+  // Mouse move effect
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -109,16 +110,33 @@ export default function Home() {
       />
 
       <div style={{ textAlign: "center", maxWidth: "600px", zIndex: 2 }}>
-        <h1
-          style={{
-            fontSize: "3rem",
-            fontWeight: "bold",
-            marginBottom: "10px",
-            color: "#00bfff",
-          }}
+        {/* Clickable homepage logo */}
+        <Link
+          href="/"
+          aria-label="Go to homepage"
+          style={{ textDecoration: "none" }}
         >
-          🔍 Links<span style={{ color: "white" }}>Probe</span>
-        </h1>
+          <h1
+            style={{
+              fontSize: "3rem",
+              fontWeight: "bold",
+              marginBottom: "10px",
+              color: "#00bfff",
+              cursor: "pointer",
+              transition: "text-shadow 0.3s ease",
+            }}
+            onMouseEnter={(e) =>
+              ((e.target as HTMLElement).style.textShadow =
+                "0 0 12px rgba(0,191,255,0.8)")
+            }
+            onMouseLeave={(e) =>
+              ((e.target as HTMLElement).style.textShadow = "none")
+            }
+          >
+            🔍 Links<span style={{ color: "white" }}>Probe</span>
+          </h1>
+        </Link>
+
         <p
           style={{
             fontSize: "1.1rem",
