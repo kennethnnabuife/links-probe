@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "LinksProbe - Safe Link Checker",
   description:
-    "LinksProbe is an open source web app that checks if a link is safe, suspicious, or dangerous using Google’s Safe Browsing API.",
+    "LinksProbe is an open source web app that checks if a link is safe, suspicious, or dangerous using Google’s Safe Browsing API. Built by Kenneth Nnabuife.",
 };
 
 export default function RootLayout({

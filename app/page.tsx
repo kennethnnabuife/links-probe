@@ -7,7 +7,7 @@ import {
   MouseEvent as ReactMouseEvent,
 } from "react";
 import { Poppins } from "next/font/google";
-import Link from "next/link";
+import styles from "./page.module.css";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -73,120 +73,46 @@ export default function Home() {
   };
 
   return (
-    <div
-      className={poppins.className}
-      style={{
-        minHeight: "100vh",
-        background:
-          "linear-gradient(180deg, #070b19 0%, #10142c 60%, #090c1b 100%)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "white",
-        padding: "20px",
-        fontFamily: "Poppins, sans-serif",
-        overflow: "hidden",
-        position: "relative",
-      }}
-    >
-      {/* Mouse glow circle */}
+    <div className={`${styles.container} ${poppins.className}`}>
       <div
+        className={styles.glow}
         style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "200px",
-          height: "200px",
-          borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(0,191,255,0.3) 0%, transparent 70%)",
-          pointerEvents: "none",
           transform: `translate(${mousePosition.x - 100}px, ${
             mousePosition.y - 100
           }px)`,
-          transition: "transform 0.05s linear",
-          zIndex: 1,
         }}
       />
 
-      <div style={{ textAlign: "center", maxWidth: "700px", zIndex: 2 }}>
-        {/* Clickable homepage logo */}
-        <Link
-          href="/"
-          aria-label="Go to homepage"
-          style={{ textDecoration: "none" }}
+      <div className={styles.content}>
+        <div
+          className={styles.logoLink}
+          onClick={() => window.location.reload()}
+          role="button"
+          aria-label="Reload homepage"
         >
-          <h1
-            style={{
-              fontSize: "90px",
-              fontWeight: "bold",
-              marginBottom: "10px",
-              color: "#00bfff",
-              cursor: "pointer",
-              transition: "text-shadow 0.3s ease",
-            }}
-            onMouseEnter={(e) =>
-              ((e.target as HTMLElement).style.textShadow =
-                "0 0 12px rgba(0,191,255,0.8)")
-            }
-            onMouseLeave={(e) =>
-              ((e.target as HTMLElement).style.textShadow = "none")
-            }
-          >
-            🔍 Links<span style={{ color: "white" }}>Probe</span>
+          <h1 className={styles.title}>
+            🔍 Links<span className={styles.titleAccent}>Probe</span>
           </h1>
-        </Link>
+        </div>
 
-        <p
-          style={{
-            fontSize: "1.1rem",
-            color: "#cfcfcf",
-            marginBottom: "40px",
-          }}
-        >
+        <p className={styles.subtitle}>
           Instantly check if a link is safe, suspicious, or dangerous, powered
           by intelligent threat analysis.
         </p>
 
-        <form
-          onSubmit={handleScan}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "12px",
-            alignItems: "center",
-          }}
-        >
+        <form className={styles.form} onSubmit={handleScan}>
           <input
+            className={styles.input}
             type="text"
             placeholder="Enter a URL (e.g. https://example.com)"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            style={{
-              width: "100%",
-              maxWidth: "400px",
-              padding: "12px 15px",
-              borderRadius: "10px",
-              border: "none",
-              outline: "none",
-              fontSize: "1rem",
-            }}
           />
+
           <button
             type="submit"
             disabled={loading}
-            style={{
-              backgroundColor: "#00bfff",
-              color: "white",
-              border: "none",
-              borderRadius: "10px",
-              padding: "12px 25px",
-              fontWeight: "bold",
-              fontSize: "1rem",
-              cursor: loading ? "not-allowed" : "pointer",
-              transition: "background 0.3s ease",
-            }}
+            className={styles.button}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
@@ -195,25 +121,15 @@ export default function Home() {
         </form>
 
         {result && (
-          <div
-            style={{
-              marginTop: "30px",
-              backgroundColor: "rgba(255, 255, 255, 0.08)",
-              padding: "20px",
-              borderRadius: "12px",
-              boxShadow: "0 0 10px rgba(0,191,255,0.2)",
-            }}
-          >
+          <div className={styles.result}>
             <p
-              style={{
-                fontSize: "1.1rem",
-                fontWeight: "bold",
-                color: result.includes("Safe")
-                  ? "#4ade80"
+              className={`${styles.resultText} ${
+                result.includes("Safe")
+                  ? styles.safe
                   : result.includes("Dangerous")
-                  ? "#f87171"
-                  : "#facc15",
-              }}
+                  ? styles.danger
+                  : styles.warning
+              }`}
             >
               {result}
             </p>
@@ -221,31 +137,21 @@ export default function Home() {
         )}
       </div>
 
-      <footer
-        style={{
-          marginTop: "70px",
-          textAlign: "center",
-          color: "#8b8b8b",
-          fontSize: "0.9rem",
-          zIndex: 2,
-        }}
-      >
+      <footer className={styles.footer}>
         <p>
           © {new Date().getFullYear()} LinksProbe, built with ❤️ by{" "}
           <a
             href="https://github.com/kennethnnabuife"
-            style={{ color: "#00bfff", textDecoration: "none" }}
             target="_blank"
             rel="noreferrer"
           >
             Kenneth Nnabuife
           </a>
         </p>
-        <p style={{ marginTop: "5px" }}>
+        <p className={styles.footerLinkRow}>
           Open Source on{" "}
           <a
             href="https://github.com/kennethnnabuife/links-probe"
-            style={{ color: "#00bfff", textDecoration: "none" }}
             target="_blank"
             rel="noreferrer"
           >
