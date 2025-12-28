@@ -1,9 +1,12 @@
 "use client";
 
-import { FormEvent, useState, MouseEvent as ReactMouseEvent } from "react";
-import axios from "axios";
+import {
+  FormEvent,
+  useEffect,
+  useState,
+  MouseEvent as ReactMouseEvent,
+} from "react";
 import { Poppins } from "next/font/google";
-import { useEffect } from "react";
 import Link from "next/link";
 
 const poppins = Poppins({
@@ -12,14 +15,11 @@ const poppins = Poppins({
 });
 
 export default function Home() {
-  const [url, setUrl] = useState<string>("");
-  const [result, setResult] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [url, setUrl] = useState("");
+  const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
-
-  // Mouse move effect
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -31,9 +31,7 @@ export default function Home() {
   function normalizeUrl(input: string): string {
     if (!input) return "";
     let u = input.trim();
-    if (!/^[a-zA-Z]+:\/\//.test(u)) {
-      u = "https://" + u;
-    }
+    if (!/^[a-zA-Z]+:\/\//.test(u)) u = "https://" + u;
     try {
       const parsed = new URL(u);
       return parsed.origin + parsed.pathname + parsed.search;
@@ -51,12 +49,15 @@ export default function Home() {
     setResult("");
 
     try {
-      const res = await axios.post<{ message: string }>(BACKEND_URL, {
-        url: cleanedUrl,
+      const res = await fetch("/api/scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: cleanedUrl }),
       });
-      setResult(res.data.message);
-    } catch (err) {
-      console.error("Scan error:", err);
+
+      const data = await res.json();
+      setResult(data.message);
+    } catch {
       setResult("Error: Unable to scan this link.");
     } finally {
       setLoading(false);
