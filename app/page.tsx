@@ -109,7 +109,7 @@ export default function Home() {
         }}
       />
 
-      <div style={{ textAlign: "center", maxWidth: "600px", zIndex: 2 }}>
+      <div style={{ textAlign: "center", maxWidth: "700px", zIndex: 2 }}>
         {/* Clickable homepage logo */}
         <Link
           href="/"
@@ -118,7 +118,7 @@ export default function Home() {
         >
           <h1
             style={{
-              fontSize: "3rem",
+              fontSize: "90px",
               fontWeight: "bold",
               marginBottom: "10px",
               color: "#00bfff",
